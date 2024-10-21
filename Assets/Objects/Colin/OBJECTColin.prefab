@@ -102,9 +102,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 526d285c851167f4da0ba02fa6e3844e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftKey: 276
-  rightKey: 275
-  jumpKey: 32
+  groundCheckLeft: {fileID: 0}
+  groundCheckRight: {fileID: 0}
+  movingSpeed: 12
+  jumpForce: 27
 --- !u!50 &4619553723309570154
 Rigidbody2D:
   serializedVersion: 4
@@ -113,14 +114,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7368832707822169906}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
-  m_Mass: 30
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 6.5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -166,11 +167,11 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.5}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 7.31, y: 7.31}
+    oldSize: {x: 6.69, y: 6.69}
     newSize: {x: 7.31, y: 7.31}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
