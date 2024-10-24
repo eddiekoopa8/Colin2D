@@ -75,7 +75,7 @@ public class FADERHandler : MonoBehaviour
                 if (render.color.a >= 0)
                 {
                     Color newCol = render.color;
-                    newCol.a -= Time.deltaTime / 0.15f;
+                    newCol.a -= Time.deltaTime / 0.25f;
                     render.color = newCol;
                 }
             }
@@ -84,7 +84,7 @@ public class FADERHandler : MonoBehaviour
                 if (render.color.a <= 1)
                 {
                     Color newCol = render.color;
-                    newCol.a += Time.deltaTime / 0.15f;
+                    newCol.a += Time.deltaTime / 0.25f;
                     render.color = newCol;
                 }
             }

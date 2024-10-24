@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ENEMY01Controller : MonoBehaviour
+public class ENEMY01Controller : ACTORController
 {
     // Start is called before the first frame update
-    void Start()
+    public override void ActorStart()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    public override void ActorUpdate()
     {
-        
+
     }
 }
+
+

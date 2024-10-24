@@ -15,16 +15,13 @@ public class COLINControl : ACTORController
     private Animator animator;
     private FADERHandler fade;
 
-    /// <summary>
-    /// This plays an animation depending if the player is in ground or not
-    /// </summary>
-    /// <param name="name">Animation name</param>
-    /// <param name="groundCheck">Check to see if either true or false</param>
-    public void PlayAnimGround(string name, bool groundCheck)
-    {
-        bool result = true;
-        if (isGrounded == groundCheck) animator.Play(name);
-    }
+    private bool charging = false;
+    private bool chargingCool = false;
+
+    private bool startCharging = false;
+
+    float chargeTickMax = 21f;
+    float chargeTick = 0;
 
     /// <summary>
     /// Play an animation
@@ -42,6 +39,55 @@ public class COLINControl : ACTORController
     {
         animator = GetComponent<Animator>();
         fade = GameObject.Find("FADERObject").GetComponent<FADERHandler>();
+
+        charging = false;
+    }
+
+    public void Charge()
+    {
+        charging = true;
+        chargeTick = 0;
+        rigidbody.velocityX = 0;
+    }
+
+    int DirectionMultiplier()
+    {
+        return (renderer.flipX ? -1 : 1);
+    }
+
+    public void Knock()
+    {
+        PlayAnim("JUMP");
+        rigidbody.velocityX = 0;
+    }
+
+    void FixedUpdate()
+    {
+        // Time charging
+        if (charging)
+        {
+            if (chargeTick++ >= chargeTickMax)
+            {
+                if (rigidbody.velocityY == 0 || rigidbody.velocityX == 0)
+                {
+                    chargeTick = 0;
+                    charging = false;
+                    startCharging = false;
+                    rigidbody.velocityX = 0;
+                    chargingCool = true;
+                }
+            }
+        }
+
+        // Cool down after charge
+        if (chargingCool)
+        {
+            if (chargeTick++ >= (chargeTickMax - 2) / 2)
+            {
+                chargeTick = 0;
+                chargingCool = false;
+            }
+        }
     }
 
     /// <summary>
@@ -66,42 +112,89 @@ public class COLINControl : ACTORController
         }
 
         // MOVE
-        if (HeldMoveKey)
+        if (HeldMoveKey && !charging)
         {
             // Get direction
-            Vector3 direction = transform.right * HeldMoveAxis;
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + direction, movingSpeed * Time.deltaTime);
+            Vector2 direction = rigidbody.transform.right * HeldMoveAxis;
+            rigidbody.position = Vector3.MoveTowards(rigidbody.position, rigidbody.position + direction, movingSpeed * Time.deltaTime);
+        }
 
-            PlayAnimGround("ANIMRun", true);
+        // CHARGE
+        if (Input.GetButtonDown("Fire1") && !charging && !chargingCool)
+        {
+            Charge();
+        }
+
+        if (charging)
+        {
+            rigidbody.velocityX = (movingSpeed * 2) * DirectionMultiplier();
+        }
+
+        // ANIMATION
+        if (charging)
+        {
+            PlayAnim("CHARGE");
         }
         else
         {
-            PlayAnimGround("ANIMIdle", true);
+            if (isGrounded)
+            {
+                if (HeldMoveKey)
+                {
+                    PlayAnim("RUN");
+                }
+                else
+                {
+                    PlayAnim("IDLE");
+                }
+            }
+            else if (!isGrounded)
+            {
+                if (didSuperJump)
+                {
+                    PlayAnim("JUMP");
+                }
+                else
+                {
+                    if (rigidbody.velocity.y < 0.2)
+                    {
+                        PlayAnim("FALL");
+                    }
+                    else
+                    {
+                        PlayAnim("JUMP");
+                    }
+                }
+            }
         }
 
-        // JUMP
         if (PressedJump && isGrounded)
         {
             if (HeldUpKey && !HeldMoveKey)
             {
-                rigidbody.AddForce(transform.up * (jumpForce * 1.25f), ForceMode2D.Impulse);
+                rigidbody.AddForce(transform.up * (jumpForce * 1.34f), ForceMode2D.Impulse);
                 didSuperJump = true;
+                isGrounded = false;
             }
             else
             {
                 rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
             }
         }
-        PlayAnimGround("ANIMIdle", false);
+
+        if (isGrounded && didSuperJump && rigidbody.velocity.y < 0) didSuperJump = false;
 
         // FLIP DIRECTION
-        if (HeldMoveAxis > 0)
+        if (!charging)
         {
-            renderer.flipX = false;
-        }
-        else if (HeldMoveAxis < 0)
-        {
-            renderer.flipX = true;
+            if (HeldMoveAxis > 0)
+            {
+                renderer.flipX = false;
+            }
+            else if (HeldMoveAxis < 0)
+            {
+                renderer.flipX = true;
+            }
         }
     }
 

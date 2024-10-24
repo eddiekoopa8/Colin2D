@@ -3,8 +3,11 @@ public class ACTORController : MonoBehaviour
 {
     protected bool isGrounded = false;
 
-    public Transform groundCheckLeft;
-    public Transform groundCheckRight;
+    //public Transform groundCheckLeft;
+    //public Transform groundCheckRight;
+
+    Vector3 checkLeft = Vector3.zero;
+    Vector3 checkRight = Vector3.zero;
 
     protected Rigidbody2D rigidbody = new Rigidbody2D();
     protected SpriteRenderer renderer = new SpriteRenderer();
@@ -18,22 +21,38 @@ public class ACTORController : MonoBehaviour
 
         ActorStart();
 
+        checkLeft = collide.offset;
+        checkLeft.y += collide.size.y;
+        checkRight = collide.offset;
+        checkRight.x += collide.size.x;
+        checkRight.y += collide.size.y;
+
+        Debug.Log(collide.offset);
+        Debug.Log(collide.size);
         Debug.Log(name + " actor is ready.");
     }
 
     public virtual void ActorStart()
     {
+        Debug.Log("ACTOR HAS NO INIT");
+    }
 
+    private bool touchingLine(Vector3 b, Vector3 e)
+    {
+        Collider2D[] cl0 = Physics2D.OverlapCircleAll(b, 0.7f);
+        Collider2D[] cl1 = Physics2D.OverlapCircleAll(e, 0.7f);
+        return cl0.Length > 1 || cl1.Length > 1;
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(checkLeft, checkRight);
     }
 
     private void Update()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckLeft.transform.position, 0.7f);
-        isGrounded = colliders.Length > 1;
-
-        colliders = Physics2D.OverlapCircleAll(groundCheckRight.transform.position, 0.7f);
-        if (!isGrounded) isGrounded = colliders.Length > 1;
-
+        //isGrounded = touchingLine(groundCheckLeft.transform.position, groundCheckRight.transform.position);
+        isGrounded = touchingLine(checkLeft, checkRight);
         ActorUpdate();
     }
 

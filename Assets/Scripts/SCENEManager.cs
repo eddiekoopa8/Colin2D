@@ -20,6 +20,11 @@ public class SCENEManager : MonoBehaviour
         changeScene__(name, -1);
     }
 
+    public void Restart()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+    }
+
     bool verifyScene__(string name)
     {
         if (name == null) return true;
