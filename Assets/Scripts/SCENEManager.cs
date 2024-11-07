@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using Assets.Scripts;
+using System;
 
 public class SCENEManager : MonoBehaviour
 {
@@ -58,9 +60,10 @@ public class SCENEManager : MonoBehaviour
 
     private void changeScene__(string name, int id)
     {
+        GAMEManager.PopStars();
         if (id == -1 && name == null)
         {
-            Debug.LogError($"scene arg is missing.");
+            Debug.LogError($"scene arg is missing. please supply them");
             Debug.Break();
         }
 

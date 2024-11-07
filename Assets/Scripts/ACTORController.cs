@@ -3,6 +3,10 @@ using UnityEngine;
 public class ACTORController : MonoBehaviour
 {
     protected bool isGrounded = false;
+    protected bool isLeft = false;
+    protected bool isRight = false;
+
+    protected bool alwaysActive = false;
 
     //public Transform groundCheckLeft;
     //public Transform groundCheckRight;
@@ -29,6 +33,11 @@ public class ACTORController : MonoBehaviour
         ActorStart();
 
         Debug.Log(name + " actor is ready.");
+
+        if (alwaysActive == false)
+        {
+            enabled = false;
+        }
     }
 
     public virtual void ActorStart()
@@ -49,6 +58,10 @@ public class ACTORController : MonoBehaviour
 
     private void Update()
     {
+        if (isActiveAndEnabled == false)
+        {
+            return;
+        }
         // This part took so long to figure out. the axis in unity is so confusing. I still am not 100% how this fully works.
 
         // For ground
@@ -59,13 +72,27 @@ public class ACTORController : MonoBehaviour
         groundRight = groundLeft;
         groundRight.x += collide.size.x - (1.1f * 2) - 0.3f;
 
-        if (GameObject.Find("ILoveDebugging") != null && GameObject.Find("VeryNotPainful") != null)
+        // For left
+        leftUp = rigidbody.position + collide.offset;
+        leftUp.x -= 1.2f;
+        leftDown = leftUp;
+        leftDown.y -= collide.size.y - 2.6f;
+
+        // For left
+        rightUp = rigidbody.position + collide.offset;
+        rightUp.x += collide.size.x - (1.1f * 2) - 0.2f;
+        rightDown = rightUp;
+        rightDown.y -= collide.size.y - 2.6f;
+
+        /*if (GameObject.Find("ILoveDebugging") != null && GameObject.Find("VeryNotPainful") != null)
         {
             GameObject.Find("ILoveDebugging").transform.position = groundLeft;
             GameObject.Find("VeryNotPainful").transform.position = groundRight;
-        }
+        }*/
 
         isGrounded = touchingLine(groundLeft, groundRight);
+        isLeft = touchingLine(leftUp, leftDown);
+        isRight = touchingLine(rightUp, rightDown);
 
         // DEBUGGING PURPOSES
         if (Input.GetKeyDown(KeyCode.Space))
@@ -88,5 +115,13 @@ public class ACTORController : MonoBehaviour
     public virtual void ActorUpdate()
     {
 
+    }
+
+    void OnBecameVisible()
+    {
+        if (alwaysActive == false)
+        {
+            enabled = true;
+        }
     }
 }

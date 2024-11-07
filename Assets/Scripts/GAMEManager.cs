@@ -10,9 +10,20 @@ namespace Assets.Scripts
     {
         static int stars;
         public static int StarsCollected { get { return stars; } }
+        static int totalStar = 0;
         public static void AddStar()
         {
             stars++;
+        }
+
+        public static void PushStars()
+        {
+            totalStar = stars;
+        }
+
+        public static void PopStars()
+        {
+            stars = totalStar;
         }
     }
 }

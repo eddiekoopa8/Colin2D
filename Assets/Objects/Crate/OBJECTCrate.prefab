@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -1999640132890531890}
   - component: {fileID: -4967758743801303335}
   - component: {fileID: -4728481989964241116}
+  - component: {fileID: 3331154911009763101}
   m_Layer: 0
   m_Name: OBJECTCrate
   m_TagString: Untagged
@@ -174,3 +175,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dac9f86ec4e56f4bb867a6851401d53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &3331154911009763101
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2659181813866554691}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f8770cb4424f3e242a5454d183c9607a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

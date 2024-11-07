@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Animations;
 using Unity.VisualScripting;
 using UnityEngine.UIElements;
+using Assets.Scripts;
+using System.Diagnostics.Contracts;
 
 public class COLINControl : ACTORController
 {
@@ -23,26 +24,104 @@ public class COLINControl : ACTORController
     float chargeTickMax = 21f;
     float chargeTick = 0;
 
+    bool dead = false;
+    bool hadDied = false;
+
+    bool HeldMoveKey = false;
+    bool PressCharge = false;
+
+    int health = 100;
+
+    bool canHit = false;
+    int invincible = 50;
+    int invTick = 50;
+
+    public int Health { get { return health; } }
+
     /// <summary>
     /// Hmmm IS this object Colin?...
     /// </summary>
+    /// <param name="obj">Game object</param>
     public static bool Verify(GameObject obj)
     {
         return obj.GetComponent<COLINControl>() != null;
     }
-    
+
+    /// <summary>
+    /// Hmmm IS this object Colin?...
+    /// </summary>
+    /// <param name="obj">Behaviour containing the game object</param>
+    public static bool Verify(Behaviour obj)
+    {
+        return obj.gameObject.GetComponent<COLINControl>() != null;
+    }
+
+    /// <summary>
+    /// Me when I GET you...
+    /// </summary>
+    /// <param name="obj">Game Object to be GET</param>
     public static COLINControl GetInstance(GameObject obj)
     {
         return obj.GetComponent<COLINControl>();
     }
 
     /// <summary>
-    /// This function shouldn't be static..
-    /// But whatever. Checks if the player is charging.
+    /// Me when I GET you...
     /// </summary>
-    public static bool Charging(GameObject obj)
+    /// <param name="obj">Behaviour containing Game Object to be GET</param>
+    public static COLINControl GetInstance(Behaviour obj)
     {
-        return obj.GetComponent<COLINControl>().charging;
+        return obj.gameObject.GetComponent<COLINControl>();
+    }
+
+    public void Hit(int damage)
+    {
+        if (canHit)
+        {
+            health -= damage;
+            if (health < 0) health = 0;
+            canHit = false;
+            invTick = 0;
+        }
+    }
+
+    public void Heal(int nh)
+    {
+        health += nh;
+        if (health >= 100)
+        {
+            health = 100;
+        }
+    }
+
+    /// <summary>
+    /// Checks if the player is charging.
+    /// </summary>
+    public bool Charging()
+    {
+        if (Input.GetButtonDown("Fire1"))
+        {
+            return true;
+        }
+        else
+        {
+            return charging;
+        }
+    }
+
+    public void Die()
+    {
+        dead = true;
+    }
+
+    public bool OnTop()
+    {
+        return isGrounded;
+    }
+
+    public void Bounce()
+    {
+        rigidbody.AddForce(rigidbody.transform.up * (jumpForce - 1f), ForceMode2D.Impulse);
     }
 
     /// <summary>
@@ -59,6 +138,8 @@ public class COLINControl : ACTORController
     /// </summary>
     public override void ActorStart()
     {
+        alwaysActive = true;
+
         animator = GetComponent<Animator>();
         fade = GameObject.Find("FADERObject").GetComponent<FADERHandler>();
 
@@ -127,6 +208,16 @@ public class COLINControl : ACTORController
                 chargingCool = false;
             }
         }
+
+        if (invTick++ >= invincible)
+            {
+            canHit = true;
+            renderer.enabled = true;
+        }
+        else
+        {
+            renderer.enabled = !renderer.enabled; // flip bool
+        }
     }
 
     /// <summary>
@@ -135,9 +226,15 @@ public class COLINControl : ACTORController
     public override void ActorUpdate()
     {
         bool PressedJump = Input.GetButtonDown("Jump"); // presed up
-        bool HeldMoveKey = Input.GetButton("Horizontal"); // pressed movement
+        HeldMoveKey = Input.GetButton("Horizontal"); // pressed movement
         float HeldMoveAxis = Input.GetAxis("Horizontal"); // held movement radius stuff
         bool HeldUpKey = Input.GetAxis("Vertical") > 0.1f; // if holding up
+        PressCharge = Input.GetButtonDown("Fire1"); // pressed charge
+
+        if (health <= 0)
+        {
+            Die();
+        }
 
         // if there is a fader object
         if (fade)
@@ -150,6 +247,19 @@ public class COLINControl : ACTORController
             }
         }
 
+        if (dead)
+        {
+            if (hadDied == false)
+            {
+                PlayAnim("DEAD");
+
+                LEVELBrain.GetInstance().PlayerDied();
+
+                hadDied = true;
+            }
+            return;
+        }
+
         // MOVE
         if (HeldMoveKey && !charging)
         {
@@ -159,7 +269,7 @@ public class COLINControl : ACTORController
         }
 
         // CHARGE
-        if (Input.GetButtonDown("Fire1") && !charging && !chargingCool)
+        if (PressCharge && !charging && !chargingCool)
         {
             Charge();
         }
@@ -193,7 +303,7 @@ public class COLINControl : ACTORController
                 // if so, replace the animation with super jump animation
                 if (didSuperJump)
                 {
-                    PlayAnim("IDLE");
+                    PlayAnim("JUMP");
                 }
                 else
                 {

@@ -1,6 +1,6 @@
+using Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 
 public class LEVELBrain : MonoBehaviour
@@ -23,11 +23,12 @@ public class LEVELBrain : MonoBehaviour
     public void PlayerDied()
     {
         playerDie = true;
+        fadingOut = false;
     }
 
     public static LEVELBrain GetInstance()
     {
-        return GameObject.Find("LEVELBrian").GetComponent<LEVELBrain>();
+        return GameObject.Find("LEVELBrain").GetComponent<LEVELBrain>();
     }
 
     // Update is called once per frame
@@ -56,6 +57,7 @@ public class LEVELBrain : MonoBehaviour
 
         if (fader.FadeDone() && nextLevelGo && fadingOut)
         {
+            GAMEManager.PushStars();
             scene.ChangeScene(nextLevel);
         }
     }

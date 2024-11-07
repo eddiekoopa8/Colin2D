@@ -17,6 +17,8 @@ public class HUDManager : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        health.text = COLINControl.GetInstance(GameObject.Find("OBJECTColin")).Health.ToString();
+        healthS.text = COLINControl.GetInstance(GameObject.Find("OBJECTColin")).Health.ToString();
         spark.text = GAMEManager.StarsCollected.ToString();
         sparkS.text = GAMEManager.StarsCollected.ToString();
     }

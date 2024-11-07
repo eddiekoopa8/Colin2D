@@ -7,6 +7,8 @@ public class TITLEManager : MonoBehaviour
 {
     Image image;
     Color colour;
+    int startMax = 10;
+    int startTick = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,9 +22,12 @@ public class TITLEManager : MonoBehaviour
     {
         image.color = colour;
 
-        if (colour.a < 0.18f)
+        if (startTick++ >= startMax)
         {
-            colour.a += 0.002f;
+            if (colour.a < 0.18f)
+            {
+                colour.a += 0.002f;
+            }
         }
     }
 }

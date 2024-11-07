@@ -6,6 +6,7 @@ public class SPRNGBrain : MonoBehaviour
 {
     int cooldownMax = 12;
     int cooldown = 0;
+    public float BounceForce = 40f;
     void FixedUpdate()
     {
         if (cooldown < cooldownMax)
@@ -20,7 +21,7 @@ public class SPRNGBrain : MonoBehaviour
         if (body != null && cooldown >= cooldownMax)
         {
             body.velocityY = 0;
-            body.AddForce(body.transform.up * 40, ForceMode2D.Impulse);
+            body.AddForce(body.transform.up * BounceForce, ForceMode2D.Impulse);
             GetComponent<Animator>().Play("Bounce");
             cooldown = 0;
         }

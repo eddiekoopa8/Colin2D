@@ -5,7 +5,6 @@ public class MOVINGController : MonoBehaviour
     public Transform platform; // reference for the platform
     public Transform startPoint; // reference for the start point
     public Transform endPoint; // reference for the end point
-    public GameObject Player;
     public float speed = 1.5f; // speed between points
     public int direction = 1; // direction of travel 1 or -1
 
@@ -20,6 +19,8 @@ public class MOVINGController : MonoBehaviour
         }
     }
 
+
+    // Update is called once per frame
     void Update()
     {
         Vector2 target = currentMovementTarget();
@@ -30,6 +31,8 @@ public class MOVINGController : MonoBehaviour
             direction *= -1;
         }
     }
+
+    // function to set the direction of travel
     Vector2 currentMovementTarget()
     {
         if (direction == 1)
@@ -42,18 +45,20 @@ public class MOVINGController : MonoBehaviour
         }
     }
 
+
     // Ensure player becomes a child of the platform on collision
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject == Player)
+        if (col.gameObject == COLINControl.Verify(col.gameObject))
         {
             col.gameObject.transform.SetParent(platform.transform, true);
         }
     }
+
     // Ensure player stops following the platform when exiting collision
     void OnCollisionExit2D(Collision2D col)
     {
-        if (col.gameObject == Player)
+        if (col.gameObject == COLINControl.Verify(col.gameObject))
         {
             if (col.gameObject.transform.parent == platform.transform)
             {
@@ -61,6 +66,7 @@ public class MOVINGController : MonoBehaviour
             }
         }
     }
+
 
 }
 
