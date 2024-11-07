@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class SCENEManager : MonoBehaviour
 {
+    bool restarting = false;
     void Start()
     {
         Debug.Log($"scene manage is ready.");
+        restarting = false;
     }
 
     public void ChangeScene(int id)
@@ -22,7 +24,21 @@ public class SCENEManager : MonoBehaviour
 
     public void Restart()
     {
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+        if (!restarting)
+        {
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+            restarting = true;
+        }
+    }
+
+    public void ExitGame()
+    {
+#if UNITY_STANDALONE
+        Application.Quit();
+#endif
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     bool verifyScene__(string name)

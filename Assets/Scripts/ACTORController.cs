@@ -1,3 +1,4 @@
+using System.Drawing;
 using UnityEngine;
 public class ACTORController : MonoBehaviour
 {
@@ -6,8 +7,14 @@ public class ACTORController : MonoBehaviour
     //public Transform groundCheckLeft;
     //public Transform groundCheckRight;
 
-    Vector3 checkLeft = Vector3.zero;
-    Vector3 checkRight = Vector3.zero;
+    Vector3 groundLeft = Vector3.zero;
+    Vector3 groundRight = Vector3.zero;
+
+    Vector3 leftUp = Vector3.zero;
+    Vector3 leftDown = Vector3.zero;
+
+    Vector3 rightUp = Vector3.zero;
+    Vector3 rightDown = Vector3.zero;
 
     protected Rigidbody2D rigidbody = new Rigidbody2D();
     protected SpriteRenderer renderer = new SpriteRenderer();
@@ -21,14 +28,6 @@ public class ACTORController : MonoBehaviour
 
         ActorStart();
 
-        checkLeft = collide.offset;
-        checkLeft.y += collide.size.y;
-        checkRight = collide.offset;
-        checkRight.x += collide.size.x;
-        checkRight.y += collide.size.y;
-
-        Debug.Log(collide.offset);
-        Debug.Log(collide.size);
         Debug.Log(name + " actor is ready.");
     }
 
@@ -39,20 +38,50 @@ public class ACTORController : MonoBehaviour
 
     private bool touchingLine(Vector3 b, Vector3 e)
     {
-        Collider2D[] cl0 = Physics2D.OverlapCircleAll(b, 0.7f);
-        Collider2D[] cl1 = Physics2D.OverlapCircleAll(e, 0.7f);
-        return cl0.Length > 1 || cl1.Length > 1;
-    }
+        Collider2D[] cl0;
+        Collider2D[] cl1;
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawLine(checkLeft, checkRight);
+        cl0 = Physics2D.OverlapCircleAll(b, 0.7f);
+        cl1 = Physics2D.OverlapCircleAll(e, 0.7f);
+
+        return cl0.Length > 1 || cl1.Length > 1;
     }
 
     private void Update()
     {
-        //isGrounded = touchingLine(groundCheckLeft.transform.position, groundCheckRight.transform.position);
-        isGrounded = touchingLine(checkLeft, checkRight);
+        // This part took so long to figure out. the axis in unity is so confusing. I still am not 100% how this fully works.
+
+        // For ground
+        groundLeft = rigidbody.position + collide.offset;
+        groundLeft.x -= 1.3f;
+        groundLeft.y -= collide.size.y - 2.8f;
+
+        groundRight = groundLeft;
+        groundRight.x += collide.size.x - (1.1f * 2) - 0.3f;
+
+        if (GameObject.Find("ILoveDebugging") != null && GameObject.Find("VeryNotPainful") != null)
+        {
+            GameObject.Find("ILoveDebugging").transform.position = groundLeft;
+            GameObject.Find("VeryNotPainful").transform.position = groundRight;
+        }
+
+        isGrounded = touchingLine(groundLeft, groundRight);
+
+        // DEBUGGING PURPOSES
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("INFO");
+            Debug.Log("========================");
+            Debug.Log("rigid " + rigidbody.position);
+            Debug.Log("groundLeft " + groundLeft);
+            Debug.Log("groundRight " + groundRight);
+            Debug.Log("collide.offset " + collide.offset);
+            Debug.Log("collide.size " + collide.size);
+            Debug.Log("isGrounded " + isGrounded);
+            Debug.Log("rigidbody.velocity " + rigidbody.velocity);
+            Debug.Log("========================");
+        }
+
         ActorUpdate();
     }
 

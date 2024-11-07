@@ -24,6 +24,28 @@ public class COLINControl : ACTORController
     float chargeTick = 0;
 
     /// <summary>
+    /// Hmmm IS this object Colin?...
+    /// </summary>
+    public static bool Verify(GameObject obj)
+    {
+        return obj.GetComponent<COLINControl>() != null;
+    }
+    
+    public static COLINControl GetInstance(GameObject obj)
+    {
+        return obj.GetComponent<COLINControl>();
+    }
+
+    /// <summary>
+    /// This function shouldn't be static..
+    /// But whatever. Checks if the player is charging.
+    /// </summary>
+    public static bool Charging(GameObject obj)
+    {
+        return obj.GetComponent<COLINControl>().charging;
+    }
+
+    /// <summary>
     /// Play an animation
     /// </summary>
     /// <param name="name">Animation name</param>
@@ -43,6 +65,9 @@ public class COLINControl : ACTORController
         charging = false;
     }
 
+    /// <summary>
+    /// Make the player charge.
+    /// </summary>
     public void Charge()
     {
         charging = true;
@@ -50,15 +75,23 @@ public class COLINControl : ACTORController
         rigidbody.velocityX = 0;
     }
 
+    /// <summary>
+    /// For direction handling.
+    /// </summary>
     int DirectionMultiplier()
     {
         return (renderer.flipX ? -1 : 1);
     }
 
+    /// <summary>
+    /// This function is very anti-climatic.
+    /// </summary>
     public void Knock()
     {
-        PlayAnim("JUMP");
+        PlayAnim("FALL");
         rigidbody.velocityX = 0;
+        rigidbody.AddForce(rigidbody.transform.up * 8, ForceMode2D.Impulse);
+        charging = false;
     }
 
     void FixedUpdate()
@@ -68,12 +101,18 @@ public class COLINControl : ACTORController
         {
             if (chargeTick++ >= chargeTickMax)
             {
-                if (rigidbody.velocityY == 0 || rigidbody.velocityX == 0)
+                if (rigidbody.velocityY == 0 && isGrounded == false)
                 {
+                    isGrounded = true;
+                }
+                if (isGrounded)
+                {
+                    // reset everything charge related (and velocity)
                     chargeTick = 0;
                     charging = false;
                     startCharging = false;
                     rigidbody.velocityX = 0;
+                    rigidbody.velocity = Vector3.zero;
                     chargingCool = true;
                 }
             }
@@ -95,10 +134,10 @@ public class COLINControl : ACTORController
     /// </summary>
     public override void ActorUpdate()
     {
-        bool PressedJump = Input.GetButtonDown("Jump");
-        bool HeldMoveKey = Input.GetButton("Horizontal");
-        float HeldMoveAxis = Input.GetAxis("Horizontal");
-        bool HeldUpKey = Input.GetAxis("Vertical") > 0.1f;
+        bool PressedJump = Input.GetButtonDown("Jump"); // presed up
+        bool HeldMoveKey = Input.GetButton("Horizontal"); // pressed movement
+        float HeldMoveAxis = Input.GetAxis("Horizontal"); // held movement radius stuff
+        bool HeldUpKey = Input.GetAxis("Vertical") > 0.1f; // if holding up
 
         // if there is a fader object
         if (fade)
@@ -131,54 +170,60 @@ public class COLINControl : ACTORController
         }
 
         // ANIMATION
-        if (charging)
+        if (charging) // if charging, only charge animation
         {
             PlayAnim("CHARGE");
         }
         else
         {
-            if (isGrounded)
+            if (isGrounded) // on land?
             {
                 if (HeldMoveKey)
                 {
-                    PlayAnim("RUN");
+                    PlayAnim("RUN"); // run animation on move
                 }
                 else
                 {
-                    PlayAnim("IDLE");
+                    PlayAnim("IDLE"); // idle animation when... idle
                 }
             }
             else if (!isGrounded)
             {
+                // TODO: `didSuperJump` is probably working now.
+                // if so, replace the animation with super jump animation
                 if (didSuperJump)
                 {
-                    PlayAnim("JUMP");
+                    PlayAnim("IDLE");
                 }
                 else
                 {
+                    // if falling, fall animation
                     if (rigidbody.velocity.y < 0.2)
                     {
                         PlayAnim("FALL");
                     }
                     else
                     {
+                        // otherwise, jump animation
                         PlayAnim("JUMP");
                     }
                 }
             }
         }
 
+        // JUMPING
         if (PressedJump && isGrounded)
         {
+            // High jump?
             if (HeldUpKey && !HeldMoveKey)
             {
-                rigidbody.AddForce(transform.up * (jumpForce * 1.34f), ForceMode2D.Impulse);
-                didSuperJump = true;
+                rigidbody.AddForce(rigidbody.transform.up * (jumpForce * 1.34f), ForceMode2D.Impulse);
+                didSuperJump = true; // for animation
                 isGrounded = false;
             }
             else
             {
-                rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+                rigidbody.AddForce(rigidbody.transform.up * jumpForce, ForceMode2D.Impulse);
             }
         }
 

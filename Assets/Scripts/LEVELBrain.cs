@@ -1,40 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 
-public class GAMEBrain : MonoBehaviour
+public class LEVELBrain : MonoBehaviour
 {
-    public GameObject death;
-    public GameObject player;
+    public Transform next;
+    public string nextLevel;
+    public Transform death;
+    public Transform player;
     public FADERHandler fader;
     public SCENEManager scene;
 
     bool playerDie = false;
+    bool nextLevelGo = false;
+    bool fadingOut = false;
 
     void Start()
     {
-        Debug.Assert(death != null);
-        Debug.Assert(player != null);
-        Debug.Assert(fader != null);
-        Debug.Assert(scene != null);
+    }
+
+    public void PlayerDied()
+    {
+        playerDie = true;
+    }
+
+    public static LEVELBrain GetInstance()
+    {
+        return GameObject.Find("LEVELBrian").GetComponent<LEVELBrain>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (player.transform.position.y >= death.transform.position.y)
+        if (player.position.y <= death.position.y)
         {
             playerDie = true;
         }
 
-        if (playerDie)
+        if (player.position.x >= next.position.x)
         {
-            fader.FadeOut();
+            nextLevelGo = true;
         }
 
-        if (fader.FadeDone() && playerDie)
+        if ((playerDie || nextLevelGo) && !fadingOut)
+        {
+            fader.FadeOut();
+            fadingOut = true;
+        }
+
+        if (fader.FadeDone() && playerDie && fadingOut)
         {
             scene.Restart();
+        }
+
+        if (fader.FadeDone() && nextLevelGo && fadingOut)
+        {
+            scene.ChangeScene(nextLevel);
         }
     }
 }
