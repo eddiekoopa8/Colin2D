@@ -23,6 +23,7 @@ public class SPRNGBrain : MonoBehaviour
             body.velocityY = 0;
             body.AddForce(body.transform.up * BounceForce, ForceMode2D.Impulse);
             GetComponent<Animator>().Play("Bounce");
+            GetComponent<AudioSource>().Play();
             cooldown = 0;
         }
     }

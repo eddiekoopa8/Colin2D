@@ -80,6 +80,7 @@ public class ENEMY01Controller : ACTORController
             {
                 COLINControl.GetInstance(collision.gameObject).Knock();
                 animator.Play("DEAD");
+                GetComponent<AudioSource>().Play();
                 function = false;
                 collide.isTrigger = true;
                 collide.enabled = false;

@@ -255,6 +255,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f48f5e4de200824596a26de73245edd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  text: {fileID: 1915903451}
+  storyScene:
+  - One time Colin and his brother Toby were wondering around the park
+  - But then they found a mysterious hill that contained a weird hole.
+  - Toby asked Colin if he is allowed to go up and see, and Colin never held a grudge
+    and alllowed him.
+  - Toby then made it on top and the hole was making a weird sound...
+  - It was starting to suck him up into the hole! And then he was inside screaming
+    for help.
+  - Colin wondered what he was doing and went up to the hill to see the hole. Strangely,
+    it did not suck him into it.
+  - But it did not stop Colin jumping into it, and so our adventure begins...
 --- !u!1001 &366849959
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -647,7 +659,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -10.341368, y: -8.076954, z: -9.205963, w: -7.4981484}
+  m_margin: {x: -12.125044, y: -8.076954, z: -10.819765, w: -5.968905}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0

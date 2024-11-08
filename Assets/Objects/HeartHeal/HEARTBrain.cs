@@ -20,6 +20,7 @@ public class HEARTBrain : MonoBehaviour
         if (COLINControl.Verify(col.gameObject))
         {
             Debug.Log("COL!");
+            GameObject.Find("SPARKAudio").GetComponent<AudioSource>().Play();
             COLINControl.GetInstance(col.gameObject).Heal(10);
             Destroy(gameObject);
         }

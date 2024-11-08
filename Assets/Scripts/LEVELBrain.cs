@@ -52,6 +52,7 @@ public class LEVELBrain : MonoBehaviour
 
         if (fader.FadeDone() && playerDie && fadingOut)
         {
+            GAMEManager.PopStars();
             scene.Restart();
         }
 

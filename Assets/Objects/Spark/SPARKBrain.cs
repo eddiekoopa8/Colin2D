@@ -21,6 +21,7 @@ public class SPARKBrain : MonoBehaviour
         {
             Debug.Log("COL!");
             GAMEManager.AddStar();
+            GameObject.Find("SPARKAudio").GetComponent<AudioSource>().Play();
             Destroy(gameObject);
         }
     }

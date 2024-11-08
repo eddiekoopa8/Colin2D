@@ -40,6 +40,7 @@ public class CREATEBrain : MonoBehaviour
             {
                 Debug.Log("COL GOOD!");
                 COLINControl.GetInstance(col.gameObject).Knock();
+                GetComponent<AudioSource>().Play();
                 animator.Play("DEAD");
                 collider.isTrigger = true;
                 collider.enabled = false;

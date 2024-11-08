@@ -36,6 +36,11 @@ public class COLINControl : ACTORController
     int invincible = 50;
     int invTick = 50;
 
+    AudioSource chargeSnd;
+    AudioSource jumpSnd;
+    AudioSource dieSnd;
+    AudioSource hurtSnd;
+
     public int Health { get { return health; } }
 
     /// <summary>
@@ -45,6 +50,13 @@ public class COLINControl : ACTORController
     public static bool Verify(GameObject obj)
     {
         return obj.GetComponent<COLINControl>() != null;
+    }
+
+    public void PlaySound(AudioSource snd)
+    {
+        snd.gameObject.transform.position = transform.position;
+        snd.Stop();
+        snd.Play();
     }
 
     /// <summary>
@@ -78,6 +90,7 @@ public class COLINControl : ACTORController
     {
         if (canHit)
         {
+            PlaySound(hurtSnd);
             health -= damage;
             if (health < 0) health = 0;
             canHit = false;
@@ -144,6 +157,11 @@ public class COLINControl : ACTORController
         fade = GameObject.Find("FADERObject").GetComponent<FADERHandler>();
 
         charging = false;
+
+        chargeSnd = GameObject.Find("COLINAudioCharge").GetComponent<AudioSource>();
+        jumpSnd = GameObject.Find("COLINAudioJump").GetComponent<AudioSource>();
+        dieSnd = GameObject.Find("COLINAudioDie").GetComponent<AudioSource>();
+        hurtSnd = GameObject.Find("COLINAudioHurt").GetComponent<AudioSource>();
     }
 
     /// <summary>
@@ -251,6 +269,8 @@ public class COLINControl : ACTORController
         {
             if (hadDied == false)
             {
+                PlaySound(dieSnd);
+
                 PlayAnim("DEAD");
 
                 LEVELBrain.GetInstance().PlayerDied();
@@ -271,6 +291,7 @@ public class COLINControl : ACTORController
         // CHARGE
         if (PressCharge && !charging && !chargingCool)
         {
+            PlaySound(chargeSnd);
             Charge();
         }
 
@@ -327,12 +348,14 @@ public class COLINControl : ACTORController
             // High jump?
             if (HeldUpKey && !HeldMoveKey)
             {
+                PlaySound(jumpSnd);
                 rigidbody.AddForce(rigidbody.transform.up * (jumpForce * 1.34f), ForceMode2D.Impulse);
                 didSuperJump = true; // for animation
                 isGrounded = false;
             }
             else
             {
+                PlaySound(jumpSnd);
                 rigidbody.AddForce(rigidbody.transform.up * jumpForce, ForceMode2D.Impulse);
             }
         }

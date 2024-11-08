@@ -18,12 +18,12 @@ namespace Assets.Scripts
 
         public static void PushStars()
         {
-            totalStar = stars;
+            //totalStar = stars;
         }
 
         public static void PopStars()
         {
-            stars = totalStar;
+            //stars = totalStar;
         }
     }
 }

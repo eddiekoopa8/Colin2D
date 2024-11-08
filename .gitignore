@@ -47,6 +47,7 @@ ExportedObj/
 *.opendb
 *.VC.db
 AssetsOLD/*
+PrivateArt/*
 *.pdn
 
 # Unity3D generated meta files

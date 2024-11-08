@@ -28,7 +28,7 @@ public class SCENEManager : MonoBehaviour
     {
         if (!restarting)
         {
-            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
             restarting = true;
         }
     }
@@ -76,11 +76,11 @@ public class SCENEManager : MonoBehaviour
         {
             if (id != -1)
             {
-                SceneManager.LoadSceneAsync(id, LoadSceneMode.Single);
+                SceneManager.LoadScene(id, LoadSceneMode.Single);
             }
             else if (name != null)
             {
-                SceneManager.LoadSceneAsync(name, LoadSceneMode.Single);
+                SceneManager.LoadScene(name, LoadSceneMode.Single);
             }
             else
             {
